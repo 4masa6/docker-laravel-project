@@ -20,11 +20,13 @@ cd docker-laravel-project
 
 # /.env作成
 cp .env.example .env
+# === /.envの編集 ===
 # 後述の/src/.env の設定と合わせる
 PMA_ARBITRARY=1
 PMA_HOST=db
 PMA_USER=root
 PMA_PASSWORD=password
+# ==================
 
 # ビルド
 docker-compose build --no-cache
@@ -56,7 +58,7 @@ URL
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
-DB_DATABASE=<データベース名>
+DB_DATABASE=<データベース名（snake_case）>
 DB_USERNAME=root
 DB_PASSWORD=password
 ```
@@ -64,7 +66,7 @@ DB_PASSWORD=password
 - phpMyAdminに接続 `http://127.0.0.1:8086/`
 - 上部「DB」タブより、下記SQLを実行
 ```sql
-CREATE DATABASE <データベース名> DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+CREATE DATABASE <データベース名（snake_case）> DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ```
 
 - phpコンテナに入り、マイグレーションを実行
