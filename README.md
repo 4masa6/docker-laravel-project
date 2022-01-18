@@ -18,6 +18,14 @@ git pull https://github.com/4masa6/docker-laravel-project.git
 
 cd docker-laravel-project
 
+# /.env作成
+cp .env.example .env
+# 後述の/src/.env の設定と合わせる
+PMA_ARBITRARY=1
+PMA_HOST=db
+PMA_USER=root
+PMA_PASSWORD=password
+
 # ビルド
 docker-compose build --no-cache
 
@@ -27,9 +35,13 @@ docker-compose up -d
 # コンテナに入る
 docker-compose exec php /bin/bash
 
-# .envファイルを作成
+
+# srcディレクトリに移動し、.envファイルを作成
 cd src
 cp .env.example .env
+# composerインストール
+composer install
+# APP_KEY作成
 php artisan key:generate
 ```
 
@@ -37,24 +49,6 @@ URL
 `http://127.0.0.1:8000/`
 
 ### DBとの接続
-
-- /.envファイル修正（phpMyAdminの接続設定）
-```plain:/.env
-/.env作成
-cp .env.example .env
-
-# 後述の/src/.env の設定と合わせる
-PMA_ARBITRARY=1
-PMA_HOST=db
-PMA_USER=root
-PMA_PASSWORD=password
-```
-
-- phpMyAdminに接続 `http://127.0.0.1:8086/`
-- 上部「DB」タブより、下記SQLを実行
-```sql
-CREATE DATABASE <データベース名> DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
-```
 
 - /src/.envファイルを修正
 ```plain:/src/.env
@@ -67,15 +61,17 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-- phpコンテナに入り、マイグレーションを実行
-```bash
-docker-compose exec php /bin/bash
-cd src
-php artisan migrate
+- phpMyAdminに接続 `http://127.0.0.1:8086/`
+- 上部「DB」タブより、下記SQLを実行
+```sql
+CREATE DATABASE <データベース名> DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ```
 
-### LaravelBreezeのインストール
-
+- phpコンテナに入り、マイグレーションを実行
 ```bash
-npm install && npm run dev
+# コンテナに入っていなければ
+docker-compose exec php /bin/bash
+cd src
+# マイグレーション実行
+php artisan migrate
 ```
